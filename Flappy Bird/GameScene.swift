@@ -36,6 +36,13 @@ class GameScene: SKScene {
         let groundY = ground.frame.height / 2
         ground.position = CGPoint(x: groundX, y: groundY)
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
+        ground.physicsBody?.categoryBitMask = Physics.ground
+        ground.physicsBody?.collisionBitMask = Physics.bird
+        ground.physicsBody?.contactTestBitMask = Physics.bird
+        ground.physicsBody?.affectedByGravity = false
+        
+        // unmoving on hit
+        ground.physicsBody?.isDynamic = false
         self.addChild(ground)
     }
     
@@ -45,6 +52,14 @@ class GameScene: SKScene {
         let birdX = self.frame.width / 2 - bird.frame.width
         let birdY = self.frame.height / 2
         bird.position = CGPoint(x: birdX, y: birdY)
+        bird.physicsBody = SKPhysicsBody(circleOfRadius: bird.size.height/2)
+        bird.physicsBody?.categoryBitMask = Physics.bird
+        bird.physicsBody?.collisionBitMask = Physics.ground | Physics.wall
+        bird.physicsBody?.contactTestBitMask = Physics.ground | Physics.wall
+        
+        bird.physicsBody?.affectedByGravity = true
+        // effect by hit
+        bird.physicsBody?.isDynamic = true
         self.addChild(bird)
         
     }
