@@ -13,24 +13,50 @@ class GameScene: SKScene {
     
     private var ground = SKSpriteNode()
     private var bird = SKSpriteNode()
+    private var walls = SKNode()
+    
+    var moveAndRemove = SKAction()
+    var gameStarted = false
     
     override func didMove(to view: SKView) {
         
-        // ground
         addGround()
-        // bird
         addBird()
-        
-        createWalls()
+
     }
     
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
-        // on bird touch
-        bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-        bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 60))
+        if gameStarted{
+            
+            // on bird touch
+            bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+            bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 60))
+            
+            
+        }else{
+            gameStarted = true
+            bird.physicsBody?.affectedByGravity = true
+            
+            let spawn = SKAction.run {
+                self.createWalls()
+            }
+            
+            let delay = SKAction.wait(forDuration: 2)
+            
+            let spawnDelay = SKAction.sequence([spawn,delay])
+            let spawnDelayReapat = SKAction.repeatForever(spawnDelay)
+            self.run(spawnDelayReapat)
+            
+            let distance = CGFloat(self.frame.width + walls.frame.width)
+            let movePipes = SKAction.moveBy(x: -distance, y: 0, duration: TimeInterval(0.02 * distance))
+            let removePipes = SKAction.removeFromParent()
+            moveAndRemove = SKAction.sequence([movePipes,removePipes])
+            
+        }
+        
         
         
     }
@@ -68,7 +94,7 @@ class GameScene: SKScene {
         bird.physicsBody?.categoryBitMask = Physics.bird
         bird.physicsBody?.collisionBitMask = Physics.ground | Physics.wall
         bird.physicsBody?.contactTestBitMask = Physics.ground | Physics.wall
-        bird.physicsBody?.affectedByGravity = true
+        bird.physicsBody?.affectedByGravity = false
         // effect by hit
         bird.physicsBody?.isDynamic = true
         
@@ -78,19 +104,20 @@ class GameScene: SKScene {
     }
     
     private func createWalls(){
-        let walls = SKNode()
+        self.walls = SKNode()
+        
         let topWall = SKSpriteNode(imageNamed: "image_wall")
         let bottomWall = SKSpriteNode(imageNamed: "image_wall")
         
         topWall.position = CGPoint(x: self.frame.width, y: self.frame.height / 2 + 350)
-
+        
         bottomWall.position = CGPoint(x: self.frame.width, y: self.frame.height / 2 - 350)
         
         topWall.setScale(0.5)
         bottomWall.setScale(0.5)
         
         // Physics Body:
-
+        
         topWall.physicsBody = SKPhysicsBody(rectangleOf: topWall.size)
         topWall.physicsBody?.categoryBitMask = Physics.wall
         topWall.physicsBody?.collisionBitMask = Physics.bird
@@ -110,7 +137,7 @@ class GameScene: SKScene {
         walls.addChild(bottomWall)
         
         walls.zPosition = 1
-        
+        walls.run(moveAndRemove)
         self.addChild(walls)
         
     }
