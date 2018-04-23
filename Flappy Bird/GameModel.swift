@@ -13,5 +13,11 @@ class GameModel{
     var score = 0
     var isDead = false
     
+    func resetData(){
+        self.gameStarted = false
+        self.score = 0
+        self.isDead = false
+    }
+    
 }
 

@@ -17,18 +17,11 @@ class GameScene: SKScene{
     private var scoreLabel = SKLabelNode(fontNamed: "angrybirds-regular")
     
     var moveAndRemove = SKAction()
-    var gameModel = GameModel()
+    let gameModel = GameModel()
     
     override func didMove(to view: SKView) {
         
-        self.physicsWorld.contactDelegate = self
-        scoreLabel.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2 + self.frame.height / 2.5)
-        scoreLabel.zPosition = 5
-        scoreLabel.text = String(describing: gameModel.score)
-        self.addChild(scoreLabel)
-        
-        addGround()
-        addBird()
+        self.createScene()
         
     }
     
@@ -61,6 +54,13 @@ class GameScene: SKScene{
             moveAndRemove = SKAction.sequence([movePipes,removePipes])
             
         }
+    }
+    
+    private func addScoreLabel(){
+        scoreLabel.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2 + self.frame.height / 2.5)
+        scoreLabel.zPosition = 5
+        scoreLabel.text = String(describing: gameModel.score)
+        self.addChild(scoreLabel)
     }
     
     private func addGround(){
@@ -159,6 +159,20 @@ class GameScene: SKScene{
         
     }
     
+    func createScene(){
+        self.physicsWorld.contactDelegate = self
+        self.addGround()
+        self.addBird()
+        self.addScoreLabel()
+    }
+    
+    func restartScene(){
+        self.removeAllChildren()
+        self.removeAllActions()
+        gameModel.resetData()
+        createScene()
+    }
+    
     
 }
 
@@ -168,14 +182,18 @@ extension GameScene : SKPhysicsContactDelegate{
         let firstBody = contact.bodyA
         let secondBody = contact.bodyB
         
+        // Pass wall
         if firstBody.categoryBitMask == Physics.score && secondBody.categoryBitMask == Physics.bird || firstBody.categoryBitMask == Physics.bird && secondBody.categoryBitMask == Physics.score {
             
             gameModel.score += 1
             scoreLabel.text = String(describing: gameModel.score)
         }
         
+        // Hit wall
         if firstBody.categoryBitMask == Physics.bird && secondBody.categoryBitMask == Physics.wall || firstBody.categoryBitMask == Physics.wall && secondBody.categoryBitMask == Physics.bird{
             gameModel.isDead = true
         }
+        
+        
     }
 }
