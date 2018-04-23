@@ -9,16 +9,23 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class GameScene: SKScene{
     
     private var ground = SKSpriteNode()
     private var bird = SKSpriteNode()
     private var walls = SKNode()
+    private var scoreLabel = SKLabelNode(fontNamed: "angrybirds-regular")
     
     var moveAndRemove = SKAction()
     var gameModel = GameModel()
     
     override func didMove(to view: SKView) {
+        
+        self.physicsWorld.contactDelegate = self
+        scoreLabel.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2 + self.frame.height / 2.5)
+        scoreLabel.zPosition = 5
+        scoreLabel.text = String(describing: gameModel.score)
+        self.addChild(scoreLabel)
         
         addGround()
         addBird()
@@ -29,11 +36,11 @@ class GameScene: SKScene {
         
         if gameModel.gameStarted{
             
-            // on bird touch
-            bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-            bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 60))
-            
-            
+            if !gameModel.isDead{
+                // on bird touch
+                bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+                bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 60))
+            }
         }else{
             gameModel.gameStarted = true
             bird.physicsBody?.affectedByGravity = true
@@ -88,7 +95,7 @@ class GameScene: SKScene {
         bird.physicsBody = SKPhysicsBody(circleOfRadius: bird.size.height/2)
         bird.physicsBody?.categoryBitMask = Physics.bird
         bird.physicsBody?.collisionBitMask = Physics.ground | Physics.wall
-        bird.physicsBody?.contactTestBitMask = Physics.ground | Physics.wall
+        bird.physicsBody?.contactTestBitMask = Physics.ground | Physics.wall | Physics.score
         bird.physicsBody?.affectedByGravity = false
         // effect by hit
         bird.physicsBody?.isDynamic = true
@@ -100,6 +107,16 @@ class GameScene: SKScene {
     
     private func createWalls(){
         self.walls = SKNode()
+        
+        let scoreNode = SKSpriteNode()
+        scoreNode.size = CGSize(width: 1, height: 200)
+        scoreNode.position = CGPoint(x: self.frame.width, y: self.frame.height / 2)
+        scoreNode.physicsBody = SKPhysicsBody(rectangleOf: scoreNode.size)
+        scoreNode.physicsBody?.affectedByGravity = false
+        scoreNode.physicsBody?.isDynamic = false
+        scoreNode.physicsBody?.categoryBitMask = Physics.score
+        scoreNode.physicsBody?.collisionBitMask = 0
+        scoreNode.physicsBody?.contactTestBitMask = Physics.bird
         
         let topWall = SKSpriteNode(imageNamed: "image_wall")
         let bottomWall = SKSpriteNode(imageNamed: "image_wall")
@@ -135,8 +152,7 @@ class GameScene: SKScene {
         
         let randomPosition = CGFloat.random(min: -200, max: 200)
         walls.position.y = walls.position.y + randomPosition
-        
-        
+        walls.addChild(scoreNode)
         
         walls.run(moveAndRemove)
         self.addChild(walls)
@@ -144,4 +160,22 @@ class GameScene: SKScene {
     }
     
     
+}
+
+extension GameScene : SKPhysicsContactDelegate{
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        let firstBody = contact.bodyA
+        let secondBody = contact.bodyB
+        
+        if firstBody.categoryBitMask == Physics.score && secondBody.categoryBitMask == Physics.bird || firstBody.categoryBitMask == Physics.bird && secondBody.categoryBitMask == Physics.score {
+            
+            gameModel.score += 1
+            scoreLabel.text = String(describing: gameModel.score)
+        }
+        
+        if firstBody.categoryBitMask == Physics.bird && secondBody.categoryBitMask == Physics.wall || firstBody.categoryBitMask == Physics.wall && secondBody.categoryBitMask == Physics.bird{
+            gameModel.isDead = true
+        }
+    }
 }

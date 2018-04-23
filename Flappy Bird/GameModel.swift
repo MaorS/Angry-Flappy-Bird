@@ -10,7 +10,8 @@ import UIKit
 class GameModel{
     
     var gameStarted = false
-    
+    var score = 0
+    var isDead = false
     
 }
 

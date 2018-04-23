@@ -18,6 +18,7 @@
 		164743BE208DE0A500FEFDA5 /* Physics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164743BD208DE0A500FEFDA5 /* Physics.swift */; };
 		164743C0208DEA1600FEFDA5 /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164743BF208DEA1600FEFDA5 /* GameModel.swift */; };
 		164743C3208DEB8300FEFDA5 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164743C2208DEB8300FEFDA5 /* Extensions.swift */; };
+		164743C5208DFF7900FEFDA5 /* angrybirds-regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 164743C4208DFF7900FEFDA5 /* angrybirds-regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		164743BD208DE0A500FEFDA5 /* Physics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Physics.swift; sourceTree = "<group>"; };
 		164743BF208DEA1600FEFDA5 /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
 		164743C2208DEB8300FEFDA5 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		164743C4208DFF7900FEFDA5 /* angrybirds-regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "angrybirds-regular.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 		164743C1208DEA2E00FEFDA5 /* Supporting files */ = {
 			isa = PBXGroup;
 			children = (
+				164743C4208DFF7900FEFDA5 /* angrybirds-regular.ttf */,
 				164743A5208DA4D800FEFDA5 /* AppDelegate.swift */,
 				164743B2208DA4D900FEFDA5 /* Assets.xcassets */,
 				164743B4208DA4D900FEFDA5 /* LaunchScreen.storyboard */,
@@ -149,6 +152,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				164743C5208DFF7900FEFDA5 /* angrybirds-regular.ttf in Resources */,
 				164743B1208DA4D800FEFDA5 /* Main.storyboard in Resources */,
 				164743A8208DA4D800FEFDA5 /* GameScene.sks in Resources */,
 				164743B3208DA4D900FEFDA5 /* Assets.xcassets in Resources */,
