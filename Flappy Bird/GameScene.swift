@@ -16,20 +16,18 @@ class GameScene: SKScene {
     private var walls = SKNode()
     
     var moveAndRemove = SKAction()
-    var gameStarted = false
+    var gameModel = GameModel()
     
     override func didMove(to view: SKView) {
         
         addGround()
         addBird()
-
+        
     }
-    
-    
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
-        if gameStarted{
+        if gameModel.gameStarted{
             
             // on bird touch
             bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
@@ -37,14 +35,14 @@ class GameScene: SKScene {
             
             
         }else{
-            gameStarted = true
+            gameModel.gameStarted = true
             bird.physicsBody?.affectedByGravity = true
             
             let spawn = SKAction.run {
                 self.createWalls()
             }
             
-            let delay = SKAction.wait(forDuration: 2)
+            let delay = SKAction.wait(forDuration: 3)
             
             let spawnDelay = SKAction.sequence([spawn,delay])
             let spawnDelayReapat = SKAction.repeatForever(spawnDelay)
@@ -56,9 +54,6 @@ class GameScene: SKScene {
             moveAndRemove = SKAction.sequence([movePipes,removePipes])
             
         }
-        
-        
-        
     }
     
     private func addGround(){
@@ -137,6 +132,12 @@ class GameScene: SKScene {
         walls.addChild(bottomWall)
         
         walls.zPosition = 1
+        
+        let randomPosition = CGFloat.random(min: -200, max: 200)
+        walls.position.y = walls.position.y + randomPosition
+        
+        
+        
         walls.run(moveAndRemove)
         self.addChild(walls)
         
