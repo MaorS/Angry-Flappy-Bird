@@ -15,6 +15,7 @@
 		164743B1208DA4D800FEFDA5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 164743AF208DA4D800FEFDA5 /* Main.storyboard */; };
 		164743B3208DA4D900FEFDA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 164743B2208DA4D900FEFDA5 /* Assets.xcassets */; };
 		164743B6208DA4D900FEFDA5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 164743B4208DA4D900FEFDA5 /* LaunchScreen.storyboard */; };
+		164743BE208DE0A500FEFDA5 /* Physics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164743BD208DE0A500FEFDA5 /* Physics.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		164743B2208DA4D900FEFDA5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		164743B5208DA4D900FEFDA5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		164743B7208DA4D900FEFDA5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		164743BD208DE0A500FEFDA5 /* Physics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Physics.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 				164743A7208DA4D800FEFDA5 /* GameScene.sks */,
 				164743A9208DA4D800FEFDA5 /* Actions.sks */,
 				164743AB208DA4D800FEFDA5 /* GameScene.swift */,
+				164743BD208DE0A500FEFDA5 /* Physics.swift */,
 				164743AD208DA4D800FEFDA5 /* GameViewController.swift */,
 				164743AF208DA4D800FEFDA5 /* Main.storyboard */,
 				164743B2208DA4D900FEFDA5 /* Assets.xcassets */,
@@ -149,6 +152,7 @@
 				164743AC208DA4D800FEFDA5 /* GameScene.swift in Sources */,
 				164743AE208DA4D800FEFDA5 /* GameViewController.swift in Sources */,
 				164743A6208DA4D800FEFDA5 /* AppDelegate.swift in Sources */,
+				164743BE208DE0A500FEFDA5 /* Physics.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
