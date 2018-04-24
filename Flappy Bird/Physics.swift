@@ -9,9 +9,25 @@
 
 import Foundation
 
-struct Physics {
-    static let bird : UInt32 = 0x1 << 1
-    static let ground : UInt32 = 0x1 << 2
-    static let wall : UInt32 = 0x1 << 3
-    static let score : UInt32 = 0x1 << 4
+enum Physics {
+    case bird
+    case ground
+    case wall
+    case score
+    case none
+    
+    var value :  UInt32{
+        switch self {
+        case .bird:
+            return 0x1 << 1
+        case .ground:
+            return 0x1 << 2
+        case .wall:
+            return 0x1 << 3
+        case .score:
+            return 0x1 << 4
+        case .none :
+            return 0xFFFFFFFF
+        }
+    }
 }

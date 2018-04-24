@@ -15,9 +15,10 @@ class GameScene: SKScene{
     private var bird = SKSpriteNode()
     private var walls = SKNode()
     private var scoreLabel = SKLabelNode(fontNamed: "angrybirds-regular")
+    private var restartButton = SKSpriteNode()
     
-    var moveAndRemove = SKAction()
-    let gameModel = GameModel()
+    private var moveAndRemove = SKAction()
+    private let gameModel = GameModel()
     
     override func didMove(to view: SKView) {
         
@@ -34,12 +35,23 @@ class GameScene: SKScene{
                 bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
                 bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 60))
             }
+            
+            
+            for touch in touches{
+                let location = touch.location(in: self)
+                
+                if gameModel.isDead == true && restartButton.contains(location){
+                    restartScene()
+                    break
+                }
+            }
+            
         }else{
             gameModel.gameStarted = true
             bird.physicsBody?.affectedByGravity = true
             
             let spawn = SKAction.run {
-                self.createWalls()
+                self.addWalls()
             }
             
             let delay = SKAction.wait(forDuration: 3)
@@ -72,9 +84,9 @@ class GameScene: SKScene{
         
         // Physics Body:
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
-        ground.physicsBody?.categoryBitMask = Physics.ground
-        ground.physicsBody?.collisionBitMask = Physics.bird
-        ground.physicsBody?.contactTestBitMask = Physics.bird
+        ground.physicsBody?.categoryBitMask = Physics.ground.value
+        ground.physicsBody?.collisionBitMask = Physics.bird.value
+        ground.physicsBody?.contactTestBitMask = Physics.bird.value
         ground.physicsBody?.affectedByGravity = false
         
         // unmoving on hit
@@ -84,7 +96,7 @@ class GameScene: SKScene{
         self.addChild(ground)
     }
     
-    func addBird(){
+    private func addBird(){
         bird = SKSpriteNode(imageNamed: "image_bird")
         bird.size = CGSize(width: 60, height: 60)
         let birdX = self.frame.width / 2 - bird.frame.width
@@ -93,9 +105,9 @@ class GameScene: SKScene{
         
         // Physics Body:
         bird.physicsBody = SKPhysicsBody(circleOfRadius: bird.size.height/2)
-        bird.physicsBody?.categoryBitMask = Physics.bird
-        bird.physicsBody?.collisionBitMask = Physics.ground | Physics.wall
-        bird.physicsBody?.contactTestBitMask = Physics.ground | Physics.wall | Physics.score
+        bird.physicsBody?.categoryBitMask = Physics.bird.value
+        bird.physicsBody?.collisionBitMask = Physics.ground.value | Physics.wall.value
+        bird.physicsBody?.contactTestBitMask = Physics.ground.value | Physics.wall.value | Physics.score.value
         bird.physicsBody?.affectedByGravity = false
         // effect by hit
         bird.physicsBody?.isDynamic = true
@@ -105,18 +117,18 @@ class GameScene: SKScene{
         
     }
     
-    private func createWalls(){
+    private func addWalls(){
         self.walls = SKNode()
-        
+        self.walls.name = "walls"
         let scoreNode = SKSpriteNode()
         scoreNode.size = CGSize(width: 1, height: 200)
         scoreNode.position = CGPoint(x: self.frame.width, y: self.frame.height / 2)
         scoreNode.physicsBody = SKPhysicsBody(rectangleOf: scoreNode.size)
         scoreNode.physicsBody?.affectedByGravity = false
         scoreNode.physicsBody?.isDynamic = false
-        scoreNode.physicsBody?.categoryBitMask = Physics.score
+        scoreNode.physicsBody?.categoryBitMask = Physics.score.value
         scoreNode.physicsBody?.collisionBitMask = 0
-        scoreNode.physicsBody?.contactTestBitMask = Physics.bird
+        scoreNode.physicsBody?.contactTestBitMask = Physics.bird.value
         
         let topWall = SKSpriteNode(imageNamed: "image_wall")
         let bottomWall = SKSpriteNode(imageNamed: "image_wall")
@@ -131,16 +143,16 @@ class GameScene: SKScene{
         // Physics Body:
         
         topWall.physicsBody = SKPhysicsBody(rectangleOf: topWall.size)
-        topWall.physicsBody?.categoryBitMask = Physics.wall
-        topWall.physicsBody?.collisionBitMask = Physics.bird
-        topWall.physicsBody?.contactTestBitMask = Physics.bird
+        topWall.physicsBody?.categoryBitMask = Physics.wall.value
+        topWall.physicsBody?.collisionBitMask = Physics.bird.value
+        topWall.physicsBody?.contactTestBitMask = Physics.bird.value
         topWall.physicsBody?.isDynamic = false
         topWall.physicsBody?.affectedByGravity = false
         
         bottomWall.physicsBody = SKPhysicsBody(rectangleOf: topWall.size)
-        bottomWall.physicsBody?.categoryBitMask = Physics.wall
-        bottomWall.physicsBody?.collisionBitMask = Physics.bird
-        bottomWall.physicsBody?.contactTestBitMask = Physics.bird
+        bottomWall.physicsBody?.categoryBitMask = Physics.wall.value
+        bottomWall.physicsBody?.collisionBitMask = Physics.bird.value
+        bottomWall.physicsBody?.contactTestBitMask = Physics.bird.value
         bottomWall.physicsBody?.isDynamic = false
         bottomWall.physicsBody?.affectedByGravity = false
         
@@ -159,41 +171,67 @@ class GameScene: SKScene{
         
     }
     
-    func createScene(){
+    private func createScene(){
         self.physicsWorld.contactDelegate = self
         self.addGround()
         self.addBird()
         self.addScoreLabel()
     }
     
-    func restartScene(){
+    private func restartScene(){
         self.removeAllChildren()
         self.removeAllActions()
         gameModel.resetData()
         createScene()
     }
     
+    private func addRestartButton(){
+        
+        restartButton = SKSpriteNode(imageNamed: "restartButton")
+        restartButton.size = CGSize(width : 50, height : 50)
+        restartButton.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
+        restartButton.zPosition = 6
+        restartButton.setScale(0)
+        self.addChild(restartButton)
+        restartButton.run(.scale(to: 1.0, duration: 0.3))
+        
+    }
+    
+    private func birdHitAction(){
+        
+        enumerateChildNodes(withName: "walls") { (node, error) in
+            node.speed = 0
+            self.removeAllActions()
+        }
+        
+        if !gameModel.isDead{
+            gameModel.isDead = true
+            addRestartButton()
+        }
+    }
+    
+    
     
 }
+
 
 extension GameScene : SKPhysicsContactDelegate{
     
     func didBegin(_ contact: SKPhysicsContact) {
-        let firstBody = contact.bodyA
-        let secondBody = contact.bodyB
-        
+
         // Pass wall
-        if firstBody.categoryBitMask == Physics.score && secondBody.categoryBitMask == Physics.bird || firstBody.categoryBitMask == Physics.bird && secondBody.categoryBitMask == Physics.score {
+        if contact.isBothPhysicsContact(.score, body2: .bird){
             
             gameModel.score += 1
             scoreLabel.text = String(describing: gameModel.score)
+            
+        }// Hit wall
+        else if contact.isBothPhysicsContact(.bird, body2: .wall){
+            birdHitAction()
+
+        }else if contact.isBothPhysicsContact(.bird, body2: .ground){
+            
+            birdHitAction()
         }
-        
-        // Hit wall
-        if firstBody.categoryBitMask == Physics.bird && secondBody.categoryBitMask == Physics.wall || firstBody.categoryBitMask == Physics.wall && secondBody.categoryBitMask == Physics.bird{
-            gameModel.isDead = true
-        }
-        
-        
     }
 }
